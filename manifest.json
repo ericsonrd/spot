@@ -1,0 +1,7 @@
+{
+  "display": "standalone",
+  "lang": "en",
+  "name": "spot",
+  "short_name": "spot",
+  "start_url": "/?utm_source=web_app_manifest"
+}
