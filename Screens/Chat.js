@@ -150,7 +150,7 @@ const Chat = ({route, navigation}) => {
     // Calling Channel Function for Retrieving Channel //
     const getChannel = (client) => {
         let channelOpts = {params: {occupancy: 'metrics.connections'}};
-        channel = client.channels.get(id, channelOpts);
+        channel = client.channels.get(("spots:"+id), channelOpts);
         console.log(`${username} has subscribed to channel ${id}!`); 
         // History Function call //
         getHistory(channel); 
