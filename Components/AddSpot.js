@@ -1,5 +1,10 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, Image, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import { colors, fonts } from '../assets/theme/Theme';
+
+const addArrow = require("../assets/images/spot-main-arrow-bottom-right.png");
+const cancelArrow = require("../assets/images/spot-main-arrow-bottom-left.png");
+const nextDoneArrow = require("../assets/images/spot-main-arrow-top-right.png");
 
 // Add Spot Button component //
 export const AddButton = (props) => {
@@ -7,8 +12,10 @@ export const AddButton = (props) => {
         <TouchableOpacity 
             style={Style.addButton}
             onPress={props.handlePress}>
-                <Text style={Style.addButtonIcon}>+</Text>
                 <Text style={Style.addButtonText}>New Spot</Text>
+                <Image 
+                    style={Style.addButtonIcon}
+                    source={addArrow} />
         </TouchableOpacity> 
     )
 };
@@ -19,8 +26,10 @@ const CancelButton = (props) => {
         <TouchableOpacity 
             style={Style.cancelButton}
             onPress={props.handlePress}>
-                <Text style={Style.cancelButtonIcon}>x</Text>
                 <Text style={Style.cancelButtonText}>Cancel</Text>
+                <Image 
+                    style={Style.cancelButtonIcon}
+                    source={cancelArrow} />
         </TouchableOpacity>
     )
 };
@@ -31,7 +40,9 @@ const NextButton = (props) => {
         <TouchableOpacity 
             style={Style.nextButton}
             onPress={props.handlePress}>
-                <Text style={Style.nextButtonIcon}>⌍</Text>
+                <Image 
+                    style={Style.nextButtonIcon}
+                    source={nextDoneArrow} />
                 <Text style={Style.nextButtonText}>Next</Text>
         </TouchableOpacity>
     )
@@ -43,7 +54,9 @@ const DoneButton = (props) => {
     <TouchableOpacity 
         style={Style.doneButton}
         onPress={props.handlePress}>
-            <Text style={Style.doneButtonIcon}>✓</Text>
+            <Image 
+                style={Style.doneButtonIcon}
+                source={nextDoneArrow} />
             <Text style={Style.doneButtonText}>Done</Text>
     </TouchableOpacity>
     )
@@ -53,13 +66,14 @@ const DoneButton = (props) => {
 export const SpotTitle = (props) => {
     return (
         <View style={Style.addMain}>
+            <CancelButton
+                handlePress={props.handleCancel} />
             <TextInput 
                 style={Style.titleInput} 
                 placeholder="Add a title..."
                 onChangeText={props.changeText}
                 value={props.value}/>
-            <CancelButton
-                handlePress={props.handleCancel} />
+            
             <NextButton 
                 handlePress={props.handleNext} />
         </View>
@@ -70,13 +84,14 @@ export const SpotTitle = (props) => {
 export const SpotDescription = (props) => {
     return (
         <View style={Style.addMain}>
+            <CancelButton
+                handlePress={props.handleCancel} />
             <TextInput 
                 style={Style.descriptionInput} 
                 placeholder="Add a description..."
                 onChangeText={props.changeText}
                 value={props.value}/>                
-            <CancelButton
-                handlePress={props.handleCancel} />
+            
             <NextButton 
                 handlePress={props.handleNext} />
         </View>
@@ -87,126 +102,141 @@ export const SpotDescription = (props) => {
 export const SpotTopic = (props) => {
     return (
         <View style={Style.addMain}>
+            <CancelButton
+                handlePress={props.handleCancel} />
             <TextInput 
                 style={Style.topicInput} 
                 placeholder="Add a topic..."
                 onChangeText={props.changeText}
                 value={props.value}/>
-            <CancelButton
-                handlePress={props.handleCancel} />
             <DoneButton 
                 handlePress={props.handleDone} />
         </View>
     )
 };
 
-
 // Styles //
 const Style = StyleSheet.create({
 
         addButton: {
-            justifyContent: 'center', 
-            alignItems: 'center', 
+            justifyContent: 'space-between',
             width: 55, 
             height: 55, 
-            backgroundColor: "grey", 
-            padding: 4,
-            marginRight: 2
+            backgroundColor: colors.yellow, 
+            padding: 6
         },
-            addButtonIcon: {
-                fontSize: 38, 
-                lineHeight: 34,
-                fontWeight: 300,
-                marginTop: 8
-            }, 
             addButtonText: {
-                fontSize: 9, 
-                marginBottom: 14, 
-                fontWeight: 500
+                fontFamily: fonts.medium,
+                color: colors.blue,
+                fontSize: 13, 
+                lineHeight: 13,
+                letterSpacing: 0.3
             },
+            addButtonIcon: {
+                width: 16,
+                height: 16,
+                resizeMode: 'contain',
+                alignSelf: 'flex-end',
+            }, 
             addMain: {
+                position: 'absolute',
                 flex: 1,
+                width: '100%',
                 flexDirection: 'row',
-                alignContent: 'stretch',
+                alignItems: 'flex-end',
                 height: 55, 
-                backgroundColor: 'grey'
+                backgroundColor: colors.metalBlue
             },
+                cancelButton: {
+                    justifyContent: 'space-between', 
+                    width: 55, 
+                    height: 55, 
+                    alignItems: 'flex-start',
+                    backgroundColor: colors.zapote,
+                    padding: 6
+                },
+                    cancelButtonText: {
+                        fontFamily: fonts.medium,
+                        color: colors.blue,
+                        fontSize: 13, 
+                        lineHeight: 13,
+                        alignSelf: 'flex-end',
+                        letterSpacing: 0.3
+                    },
+                    cancelButtonIcon: {
+                        width: 16,
+                        height: 16,
+                        resizeMode: 'contain',
+                        alignSelf: 'flex-start',
+                    },
+                    
                 titleInput: {
                     width: '100%',
-                    padding: 14, 
-                    fontSize: 26, 
-                    fontWeight: 300
+                    height: '100%',
+                    padding: 14,
+                    fontSize: 24,  
+                    fontFamily: fonts.semibold,
+                    color: colors.darkGrey
                 },
                 descriptionInput: {
                     width: '100%',
+                    height: '100%',
                     padding: 14, 
-                    fontSize: 18, 
-                    fontWeight: 300
+                    fontSize: 18,
+                    fontFamily: fonts.medium,
+                    color: colors.darkGrey 
                 },
                 topicInput: {
                     width: '100%',
+                    height: '100%',
                     padding: 14, 
-                    fontSize: 16, 
-                    fontWeight: 300
-                },
-
-            cancelButton: {
-                width: 55, 
-                height: 55, 
-                justifyContent: 'center', 
-                alignItems: 'center',
-                backgroundColor: '#505050'
-            },
-                cancelButtonIcon: {
-                    fontSize: 28, 
-                    fontWeight: 400, 
-                    color: 'white', 
-                    lineHeight: 30, 
-                    marginBotton: 46
-                },
-                cancelButtonText: {
-                    fontSize: 9, 
-                    fontWeight: 700, 
-                    color: 'white', 
-                    lineHeight: 12
+                    fontSize: 18, 
+                    fontFamily: fonts.medium,
+                    color: colors.darkGrey
                 },
             
-            nextButton: {
-                width: 55, 
-                height: 55, 
-                padding: 2, 
-                alignItems: 'flex-end', 
-                backgroundColor: 'lightgrey'
-            },
-                nextButtonIcon: { 
-                    fontSize: 40, 
-                    lineHeight: 34, 
-                    fontWeight: 600, 
-                    marginRight: 4
+                nextButton: {
+                    justifyContent: 'space-between',
+                    width: 55, 
+                    height: 55, 
+                    padding: 6, 
+                    alignItems: 'flex-end', 
+                    backgroundColor: colors.bariumGrey
                 },
-                nextButtonText: {
-                    fontSize: 9, 
-                    fontWeight: 700,
-                    marginRight: 14,
-                },
+                    nextButtonIcon: { 
+                        width: 16,
+                        height: 16,
+                        resizeMode: 'contain',
+                    },
+                    nextButtonText: {
+                        fontFamily: fonts.medium,
+                        color: colors.blue,
+                        fontSize: 13, 
+                        lineHeight: 13,
+                        alignSelf: 'flex-start',
+                        letterSpacing: 0.3
+                    },
 
-            doneButton: {
-                width: 55, 
-                height: 55, 
-                padding: 2, 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                backgroundColor: 'lightgrey'
-            },
-                doneButtonIcon: { 
-                    fontSize: 24, 
-                    lineHeight: 26, 
-                    fontWeight: 700,
-                    marginTop: 2 
+                doneButton: {
+                    justifyContent: 'space-between',
+                    width: 55, 
+                    height: 55, 
+                    padding: 6, 
+                    alignItems: 'flex-end', 
+                    backgroundColor: colors.green
                 },
-                doneButtonText: {
-                    fontSize: 10, 
-                    fontWeight: 600
-                    }
+                    doneButtonIcon: { 
+                        width: 16,
+                        height: 16,
+                        resizeMode: 'contain',
+                    },
+                    doneButtonText: {
+                        fontFamily: fonts.medium,
+                        color: colors.blue,
+                        fontSize: 13, 
+                        lineHeight: 13,
+                        alignSelf: 'flex-start',
+                        letterSpacing: 0.3
+                        }
 
 })

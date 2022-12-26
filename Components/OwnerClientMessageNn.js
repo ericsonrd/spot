@@ -3,10 +3,9 @@ import {View, Text, StyleSheet} from 'react-native';
 import {fonts, colors} from '../assets/theme/Theme.js'
 
 // Client Message component //
-const ClientMsg = (props) => {
+const OwnerClientMsg = (props) => {
     return (
         <View style={Style.main}>
-            <Text style={Style.username}>{props.userName}</Text>
             <View style={Style.messageView}>
                 <Text style={Style.message}>{props.msg}</Text>
             </View>
@@ -20,18 +19,8 @@ const Style = StyleSheet.create ({
     main: {
         width: '100%', 
     },
-        username: {
-            fontFamily: fonts.medium,
-            color: colors.metalBlue, 
-            fontSize: 12, 
-            letterSpacing: 0.3,
-            textAlign: 'right', 
-            marginRight: 12, 
-            marginTop: 16,
-            marginBottom: 4
-        },
         messageView: {
-            backgroundColor: colors.green,
+            backgroundColor: colors.yellow,
             borderRadius: 8, 
             alignSelf: 'flex-end', 
             flexWrap: 'wrap', 
@@ -49,4 +38,4 @@ const Style = StyleSheet.create ({
 
 });
 
-export default ClientMsg;
+export default OwnerClientMsg;

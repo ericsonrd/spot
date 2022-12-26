@@ -2,19 +2,19 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {fonts, colors} from '../assets/theme/Theme.js'
 
-// Client Message component //
-const ClientMsg = (props) => {
+// External User Message component //
+const OwnerUserMsg = (props) => {
     return (
-        <View style={Style.main}>
-            <Text style={Style.username}>{props.userName}</Text>
-            <View style={Style.messageView}>
-                <Text style={Style.message}>{props.msg}</Text>
-            </View>
+    <View style={Style.main}>
+        <Text style={Style.username}>{props.userName}</Text>
+        <View style={Style.messageView}>
+            <Text style={Style.message}>{props.msg}</Text>
         </View>
+    </View>
     )
 };
 
-// Styles //
+// Style //
 const Style = StyleSheet.create ({
 
     main: {
@@ -25,18 +25,18 @@ const Style = StyleSheet.create ({
             color: colors.metalBlue, 
             fontSize: 12, 
             letterSpacing: 0.3,
-            textAlign: 'right', 
-            marginRight: 12, 
+            textAlign: 'left', 
+            marginLeft: 12, 
             marginTop: 16,
             marginBottom: 4
         },
         messageView: {
-            backgroundColor: colors.green,
+            backgroundColor: colors.yellow,
             borderRadius: 8, 
-            alignSelf: 'flex-end', 
+            alignSelf: 'flex-start',
             flexWrap: 'wrap', 
-            marginLeft: 72,
-            marginBottom: 4 
+            marginRight: 72, 
+            marginBottom: 4
         },
             message: {
                 fontFamily: fonts.regular,
@@ -44,9 +44,9 @@ const Style = StyleSheet.create ({
                 fontSize: 15,
                 letterSpacing: 0.3,
                 padding: 12, 
-                textAlign: 'right'
+                textAlign: 'left'
             },
-
+    
 });
 
-export default ClientMsg;
+export default OwnerUserMsg;

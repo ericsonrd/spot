@@ -1,5 +1,7 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
+import {fonts, colors} from '../assets/theme/Theme.js'
+
 
 // Loading status component //
 const Loading = () => {
@@ -15,13 +17,15 @@ const Style = StyleSheet.create({
 
     loadingView: {
         flex: 1, 
-        backgroundColor: 'black', 
         justifyContent: 'center', 
         alignItems: 'center', 
-        paddingVertical: 146
+        paddingTop: 160
     },
         loadingText: {
-            color: 'white'
+            fontFamily: fonts.medium,
+            color: colors.metalBlue,
+            fontSize: 14,
+            letterSpacing: 0.3
         },
 
 })

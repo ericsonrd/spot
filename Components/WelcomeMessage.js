@@ -1,26 +1,34 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {fonts, colors} from '../assets/theme/Theme.js'
 
+const spotArrowGreen = require("../assets/images/spot-green-arrow-top-right.png");
 // Welcome Component for Spot when no messages present //
 const Welcome = (props) => {
     return (
         <View style={Style.main}>
-            <View style={Style.topView}>
-                <Text style={Style.titleWelcome}>Welcome to</Text>
-                <Text style={Style.title}>{props.title}</Text>
-                <Text style={Style.titleOwner}>by {props.owner}</Text>
-            </View>
-            <Text style={Style.centerMessage}>Start writing on the field at the bottom. Messages will dissappear after 24 hours, make sure to come back often.</Text>
-            <View style={Style.bottomView}>
+            <View style={Style.content}>
+                <View style={Style.topView}>
+                    <Text style={Style.titleWelcome}>Welcome to</Text>
+                    <Text style={Style.title}>{props.title}</Text>
+                    <Text style={Style.titleOwner}>by {props.owner}</Text>
+                </View>
+                <Text style={Style.centerMessage}>Start writing on the field at the bottom. Messages will dissappear after 24 hours, make sure to come back often.</Text>
                 <TouchableOpacity 
                     style={Style.buttonCreateSpot}
                     onPress={props.handlePressSpot}>
-                        <Text style={Style.createSpotText}>Create your own Spot</Text>
+                        <Text style={Style.bottomText}>Create your own Spot</Text>
+                        <Image 
+                            style={Style.arrowGreen}
+                            source={spotArrowGreen} />
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={Style.buttonQuestionFeedback}
                     onPress={props.handlePressQuest}>
-                        <Text style={Style.questionFeedbackText}>Ask question or leave feedback</Text>
+                        <Text style={Style.bottomText}>Ask questions or leave feedback</Text>                        
+                        <Image 
+                            style={Style.arrowGreen}
+                            source={spotArrowGreen} />
                 </TouchableOpacity>            
             </View>
         </View>
@@ -31,69 +39,78 @@ const Welcome = (props) => {
 const Style = StyleSheet.create ({
 
     main: {
-        flex: 1,
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        backgroundColor: 'black', 
-        padding: 80
+        flex: 1, 
+        backgroundColor: colors.darkGrey, 
+        position: 'absolute',
+        width: '100%', 
+        minHeight: 450,
+        alignItems: 'flex-start'
     },
-        topView: {
-            alignItems: 'center', 
-            marginBottom: '35%'
+        content: {
+            flex: 1,
+            alignItems: 'flex-start',
+            width: '78%',
+            maxWidth: 700,
+            paddingTop: 62
         },
-            titleWelcome: {
-                color: 'grey', 
-                textAlign: 'center', 
-                marginBottom: 16
+            topView: {
+                marginBottom: 40
             },
-            title: {
-                color: 'white', 
-                textAlign: 'center', 
-                fontSize: 36, 
-                fontWeight: 300, 
-                marginBottom: 4
-            },
-            titleOwner: {
-                color: 'grey', 
-                textAlign: 'center', 
-                fontSize: 18
-            },
+                titleWelcome: {
+                    fontFamily: fonts.medium,
+                    color: colors.metalBlue, 
+                    fontSize: 16,
+                    letterSpacing: 0.3,
+                    marginBottom: 14
+                },
+                title: {
+                    fontFamily: fonts.semibold,
+                    color: colors.peptoPink, 
+                    fontSize: 38,
+                    lineHeight: 40,
+                    letterSpacing: 0.3,
+                    marginBottom: 14,
+                    
+                },
+                titleOwner: {
+                    fontFamily: fonts.medium,
+                    color: colors.bariumGrey, 
+                    fontSize: 16,
+                    letterSpacing: 0.4
+                },
 
-    centerMessage: {
-        color: 'grey', 
-        textAlign: 'center', 
-        fontStyle: 'italic', 
-        fontSize: 14, 
-        lineHeight: 22, 
-        marginBottom: '35%'
-    },
-    
-    bottomView: {
-        alignItems: 'center'
-    },
-    buttonCreateSpot: {
-        height: 35, 
-        justifyContent: 'center', 
-        padding: 8, 
-        marginBottom: 2
-    },
-        createSpotText: {
-            color: 'white', 
-            textAlign: 'center', 
-            fontSize: 12, 
-            fontWeight: 500
+        centerMessage: {
+            fontFamily: fonts.medium,
+            color: colors.metalBlue,
+            fontSize: 16, 
+            lineHeight: 24, 
+            letterSpacing: 0.3,
+            marginBottom: 80
         },
-    buttonQuestionFeedback: {
-        height: 35, 
-        justifyContent: 'center', 
-        padding: 8
-    },
-        questionFeedbackText: {
-            color: 'white', 
-            textAlign: 'center', 
-            fontSize: 12, 
-            fontWeight: 500
-        }
+
+        buttonCreateSpot: {
+            height: 35, 
+            marginBottom: 2,
+            flexDirection: 'row'
+        },
+        buttonQuestionFeedback: {
+            height: 35, 
+            flexDirection: 'row',
+            alignItems: 'baseline'
+        },
+            bottomText: {
+                fontFamily: fonts.medium,
+                color: colors.green, 
+                fontSize: 12,
+                letterSpacing: 0.3,
+                fontWeight: 500,
+            },
+            arrowGreen: {
+                width: 10,
+                height: 10,
+                resizeMode: 'contain',
+                marginLeft: 10
+            },
 
 });
 

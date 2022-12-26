@@ -1,9 +1,13 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TextInput, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {fonts, colors} from '../assets/theme/Theme.js'
 
 // Backend call to Sign up user //
 const url = "https://x8ki-letl-twmt.n7.xano.io/api:i1afkiPC";
 const query = "/auth/verify_email/signup";
+
+const logo = require("../assets/images/spot-logo.png");
+const loginArrow = require("../assets/images/spot-main-arrow-top-right.png");
 
 // Signup Component //
 const Signup = ({navigation}) => {
@@ -50,54 +54,62 @@ const Signup = ({navigation}) => {
     };
 
     return (
-        <View 
-            style={Style.main} 
-            accessibilityRole="form">
-                <View style={Style.content} >
-                    <Text style={Style.logo}>Spot</Text>
+        <View style={Style.main}>
+            <View style={Style.content}>
+                <View style={Style.topView}>
+                    <Image 
+                        style={Style.logo}
+                        source={logo} />
                     <Text style={Style.authText}>Sign up</Text>
-                    <View style={Style.form}>
+                </View>
+                <View 
+                    style={Style.formView}
+                    accessibilityRole="form">
+                    <View>
                         <Text style={Style.fieldTitle}>Name</Text>
                         <TextInput 
-                            style={Style.Input}
+                            style={Style.input}
+                            placeholder="your name"
                             onChangeText={setName}
                             value={name} />
                         <Text style={Style.fieldTitle}>Email</Text>
                         <TextInput 
-                            style={Style.Input}
+                            style={Style.input}
+                            placeholder="your@email.com"
                             onChangeText={setEmail}
                             value={email} />
                         <Text style={Style.fieldTitle}>Password</Text>
                         <TextInput 
-                            style={Style.Input}
+                            style={Style.input}
+                            placeholder="••••••••"
                             secureTextEntry={true}
                             onChangeText={setPassword}
                             value={password} />
                         <Text style={Style.fieldTitle}>Confirm password</Text>
                         <TextInput 
-                            style={Style.Input}
+                            style={Style.input}
+                            placeholder="••••••••"
                             secureTextEntry={true}
                             onChangeText={setConfirmPass}
                             value={confirmPass} />
-                        <View style={Style.errorView}>
-                            {errorMsg ? 
-                                <Text style={Style.errorMsg}>{errorMsg}</Text>
-                                :
-                                null}
-                        </View>
                     </View>
-                    <View style={Style.buttonSection}>
-                        <TouchableOpacity 
-                            style={Style.button}
-                            onPress={handleLogin}>
-                                <Text style={Style.buttonText}>Sign up</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            style={Style.loginNav}
-                            onPress={() => navigation.navigate("Login")}>
-                                <Text style={Style.loginText}>Log in</Text>
-                        </TouchableOpacity>
+                    <View style={Style.errorView}>
+                        {errorMsg ? <Text style={Style.errorMsg}>{errorMsg}</Text> : null}
                     </View>
+                </View>
+                <View style={Style.buttonSection}>
+                    <TouchableOpacity 
+                        style={Style.button}
+                        onPress={handleLogin}>
+                            <Text style={Style.buttonText}>Sign up</Text>
+                            <Image style={Style.buttonArrow} source={loginArrow}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        style={Style.loginNav}
+                        onPress={() => navigation.navigate("Login")}>
+                            <Text style={Style.loginText}>Log in</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     )
@@ -108,87 +120,133 @@ const Signup = ({navigation}) => {
 const Style = StyleSheet.create ({
     main: {
         flex: 1, 
-        backgroundColor: 'black', 
+        backgroundColor: colors.darkGrey, 
         width: '100%', 
         height: '100%', 
+        minHeight: 850,
         justifyContent: 'center', 
         alignItems: 'center'
     },
         content: {
-            alignItems: 'center', 
-            width: '60%', 
-            height: '70%'
+            flex: 1,
+            width: '100%',
+            maxWidth: 700,
+            padding: 35,
         },
-            logo: {
-                flex: 1, 
-                color: 'grey', 
-                fontSize: 55, 
-                fontWeight: 100
+            topView: {
+                flex: 1,
+                justifyContent: 'flex-end',
+                alignItems: 'flex-start',
+                width: '100%',
+                maxWidth: 700,
+                marginBottom: 48,
             },
+                logo: {
+                    width: '70%',
+                    height: '48%',
+                    minWidth: 250,
+                    maxWidth: 350,
+                    minHeight: 90,
+                    resizeMode: 'contain',
+                    marginBottom: 4
 
-            authText: {
-                color: 'grey',
-                fontSize: 28,
-                fontWeigth: 400
-            },
-
-            form: {
-                flex: 5, 
-                justifyContent: 'center', 
-                alignItems: 'center'
-            },
-                fieldTitle: {
-                    color: 'grey', 
-                    fontSize: 14, 
-                    fontWeight: 300, 
-                    marginBottom: 8
                 },
-                    Input: {
-                        width: 175, 
-                        height: 40, 
-                        backgroundColor: 'grey',
-                        padding: 8,
-                        textAlign: 'center',
-                        marginBottom: 14
+                authText: {
+                    color: colors.metalBlue,
+                    fontSize: 24,
+                    lineHeight: 24,
+                    letterSpacing: 0.3,
+                    fontFamily: fonts.semibold,
+                },
+
+            formView: {
+                flex: 2, 
+                justifyContent: 'space-between', 
+                alignItems: 'flex-start',
+                marginBottom: 16,
+                maxWidth: 700,
+            },
+                    fieldTitle: {
+                        color: colors.metalBlue,
+                        fontFamily: fonts.medium,
+                        fontSize: 14, 
+                        fontWeight: 300, 
+                        letterSpacing: 0.3,
+                        marginBottom: 8,
+                        marginLeft: 14
+                    },
+                    input: {
+                        width: 190, 
+                        height: 45, 
+                        backgroundColor: colors.metalBlue,
+                        placeholderTextColor: colors.decayingBlue,
+                        padding: 14,
+                        fontFamily: fonts.regular,
+                        fontSize: 15,
+                        textAlign: 'left',
+                        letterSpacing: 0.3,
+                        marginBottom: 16
+                    },
+                    forgotPassword: {
+                        width: '70%',
+                        color: colors.green,
+                        fontFamily: fonts.medium,
+                        fontSize: 14,
+                        letterSpacing: 0.4,
+                        marginLeft: 14
                     },
 
-            errorView: {
-                flex: 0.2
-            },
-                errorMsg: {
-                    color: 'red',
-                    fontSize: 11,
-                    fontStyle: "italic"
+                errorView: {
+                    flex: 0.2,
+                    justifyContent: 'flex-end'
                 },
+                    errorMsg: {
+                        color: colors.zapote,
+                        fontSize: 12,
+                        letterSpacing: 0.3,
+                        fontFamily: fonts.medium,
+                        marginLeft: 14
+                    },
 
             buttonSection: {
-                flex: 0.6, 
-                justifyContent: 'center', 
-                alignItems: 'center'
+                flex: 1,
+                justifyContent: 'flex-start', 
+                alignItems: 'flex-start',
             },
                 button: {
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
+                    flexDirection: 'row',
+                    justifyContent: 'space-between', 
+                    alignItems: 'flex-start', 
                     width: 230, 
                     height: 60, 
-                    backgroundColor: 'lightblue', 
-                    marginBottom: 26 
+                    paddingVertical: 8,
+                    paddingHorizontal: 14,
+                    backgroundColor: colors.green,
+                    marginBottom: 16 
                 },
                     buttonText: {
-                        color: 'black', 
-                        fontSize: 25, 
-                        fontWeight: 300
+                        color: colors.blue, 
+                        fontFamily: fonts.semibold,
+                        fontSize: 25,
+                        lineHeight: 25,
+                        alignSelf: 'flex-end'
+                    },
+                    buttonArrow:{
+                        width: 20, 
+                        height: 20,
+                        resizeMode: 'contain',
+                        marginTop: 4
                     },
 
             loginNav: {
-                padding: 8, 
+                marginLeft: 14, 
                 justifyContent: "center", 
                 alignItems: "center"
             },
                 loginText: {
-                    color: "grey", 
-                    fontSize: 14, 
-                    fontWeight: "700"
+                    color: colors.green, 
+                    fontFamily: fonts.medium,
+                    fontSize: 16
                 }
 
 });

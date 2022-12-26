@@ -49,12 +49,12 @@ const Verify = ({navigation}) => {
     // Handling response form Backend //
     const getResponse = (response) => {
         global.token = response.authToken;
-        navigation.navigate("Channels", {toSpot: false});
+        navigation.navigate("Spots", {toSpot: false});
     };
 
     // Conditional to call Backend Verification function //
     if (magicToken === false) {
-        console.log("no token");
+        console.log("no token yet");
     } else {
         handleVerify();
     };

@@ -1,14 +1,24 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, TextInput, Image, FlatList, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import ClientMsg from '../Components/ClientMessage.js';
+import ClientMsgNn from '../Components/ClientMessageNn.js';
 import UserMsg from '../Components/UserMessage.js';
+import UserMsgNn from '../Components/UserMessageNn.js';
+import OwnerUserMsg from '../Components/OwnerUserMessage.js';
+import OwnerUserMsgNn from '../Components/OwnerUserMessageNn';
+import OwnerClientMsg from '../Components/OwnerClientMessage.js';
+import OwnerClientMsgNn from '../Components/OwnerClientMessageNn.js';
 import Loading from '../Components/Loading.js';
 import Welcome from '../Components/WelcomeMessage.js'
+import {fonts, colors} from '../assets/theme/Theme.js'
 
 // Backend Token & Spot query endpoint //
 const url = "https://x8ki-letl-twmt.n7.xano.io/api:i1afkiPC";
 const tokenQuery = "/auth/token";
 const spotQuery = /chatrooms/;
+
+const backArrow = require("../assets/images/spot-main-arrow-top-left.png");
+const sendArrow = require("../assets/images/spot-main-arrow-top-right.png");
 
 // Requiring Ably to enable Chat service connection //
 const Ably = require('ably');
@@ -24,18 +34,16 @@ const Chat = ({route, navigation}) => {
     const [msgHistory, setMsgHistory] = useState("");
     const [username, setUsername] = useState(null);
     const [userId, setUserId] = useState(null);
-    const [ablyToken, setAblyToken] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
-    const [spotTitle, setSpotTitle] = useState(null);
-    const [spotDescription, setSpotDescription] = useState(null);
+    const [spotTitle, setSpotTitle] = useState("");
     const [spotOwner, setSpotOwner] = useState("");
+    const [spotOwnerId, setSpotOwnerId] = useState("");
     const [loading, setLoading] = useState(true);
     const [members, setMembers] = useState("");
     const {id} = route.params;
     const scrollViewRef = useRef();
 
-    // Call to Backend for logged user data, Ably token and calling Spot Query function //
-    const fetchUser = async () => {
+    // Call to Backend to refresh Ably Token before expiring //
+    const freshToken = async () => {
         const endpoint = `${url}${tokenQuery}`;
         try {
             const response = await fetch(endpoint, {
@@ -49,31 +57,10 @@ const Chat = ({route, navigation}) => {
                 const jsonResponse = await response.json();
                 renderResponse(jsonResponse);
                 getSpot();
+                return jsonResponse.ablyToken
             } else {
                 const errorMessage = await response.json();
-                setErrorMsg(errorMessage.message);
                 console.log(`Not able to connect. Try again later.`)
-            }
-        }
-        catch (error) {
-            console.log(error);
-        }
-    };   
-        
-    // Call to Backend to refresh Ably Token before expiring //
-    const refreshToken = async () => {
-        const endpoint = `${url}${tokenQuery}`;
-        try {
-            const response = await fetch(endpoint, {
-                method : "GET",
-                headers: {
-                    "accept": "application/json",
-                    "Authorization": `Bearer ${token}`
-                }
-            })
-            if (response.ok) {
-                const jsonResponse = await response.json();
-                return jsonResponse.ablyToken
             }
         }
         catch (error) {
@@ -106,72 +93,87 @@ const Chat = ({route, navigation}) => {
     const renderResponse = (response) => {
         setUsername(response.user.name);
         setUserId(response.user.id);
-        setAblyToken(response.ablyToken);
     };
 
     // Function to set Spot data //
     const renderSpotData = (response) => {
         setSpotTitle(response.title);
-        setSpotDescription(response.description);
-        setSpotOwner(response.owner.name)
+        setSpotOwner(response.owner.name);
+        setSpotOwnerId(response.owner.id);
     }
-
-    // Calling function to query endpoint on first render //
-    useEffect(() => {
-        fetchUser();
-    }, []);
 
     // Calling function for Connection, Retrieving Channel, Previous History & Messages Subscription //
     useEffect(() => {
         connect();
-    }, [ablyToken]);
+    }, []);
     
     // ---------- Calling Ably Chat Connection Function ---------- //
     const connect = () => {
-        if (ablyToken !== null) {
-            client = new Ably.Realtime({authCallback: async (tokenParams, callback) => {
-                try {
-                    const tokenRequest = await refreshToken();
-                    callback(null, tokenRequest)
-                }
-                catch (error) {
-                    callback(error, null)
-                }
-            }});
-            // Client connection //
-            client.connection.on('connected', () => {
-            console.log(`${username} has connected to Ably Realtime!`);
-            // Channel Function call //
-            getChannel(client);
-            });
-        }
+        client = new Ably.Realtime({authCallback: async (tokenParams, callback) => {
+            try {
+                const tokenRequest = await freshToken();
+                callback(null, tokenRequest)
+            }
+            catch (error) {
+                callback(error, null)
+            }
+        }});
+        // Client connection //
+        client.connection.on('connected', () => {
+        console.log(`Connected to Ably Realtime!`);
+        // Channel Function call //
+        getChannel(client);
+        });
     };
+
+    useEffect(() => {
+        if (msgHistory.length >= 1) {
+            const lastMsg = msgHistory.length - 1;
+            const prevMsgUser = msgHistory[lastMsg].clientId;
+            global.previousUser = prevMsgUser;
+        } else {
+            global.previousUser = "";
+        }
+    }, [msgHistory])
 
     // Calling Channel Function for Retrieving Channel //
     const getChannel = (client) => {
         let channelOpts = {params: {occupancy: 'metrics.connections'}};
         channel = client.channels.get(("spots:"+id), channelOpts);
-        console.log(`${username} has subscribed to channel ${id}!`); 
+        console.log(`Subscribed to channel ${id}!`); 
         // History Function call //
         getHistory(channel); 
         // Subscribing to Channel Messages //
         channel.subscribe(message => {
             // Sorting Ocuppancy data from incoming messages, and push last incoming message to History array //
-            if (!message.data.metrics) {
+            if (message.data.metrics) {
+                setMembers(membersCount(message.data.metrics.connections));
+                return;
+            }
+            if (global.previousUser === message.clientId) {
+                message.data.cont = true;
                 setMsgHistory((previous) => [...previous, message])
             } else {
-                setMembers(membersCount(message.data.metrics.connections));
+                setMsgHistory((previous) => [...previous, message])
             }
         });
     };
-
+    
     // History Function called from Channel retrieval //
     let msgsHistory = [];
     const getHistory = (channel) => {
         channel.history((err, messagesPage) => {
             let messages = messagesPage.items;
             for (let i = 0; i < messages.length; i++) {
-                msgsHistory.unshift(messages[i])
+            // Identifying follow up messages to remove username //
+                let message = {...messages[i]};
+                let lastMessage = {...messages[i + 1]};
+                if (message.clientId === lastMessage.clientId) {
+                    message.data.cont = true;
+                } else {
+                    message.data.cont = false;
+                }
+                msgsHistory.unshift(message)
             };
             // Setting Previous History Array //
             setMsgHistory(msgsHistory);
@@ -180,17 +182,13 @@ const Chat = ({route, navigation}) => {
     };
     // Sending Messages to channel //
     const sendMessage = () => {
-        // Identifying follow up messages to remove username //
-        let lastMessageId = msgHistory.length - 1;
-        let lastMessageUser;
-        if (msgHistory.length !== 0) {
-            lastMessageUser = msgHistory[lastMessageId].data.user;
-        };
         // Conditional assigning values to help sorting messages from logged in user from external users //
-        if (username === lastMessageUser) {
-            channel.publish("new-message", {user: username, message: input, cont: true});
+        if (input === "")
+            return;
+        if (userId === spotOwnerId) {
+            channel.publish("new-message", {user: username, message: input, owner: true, cont: false});
         } else {
-            channel.publish("new-message", {user: username, message: input, cont: false});
+            channel.publish("new-message", {user: username, message: input, owner: false, cont: false});
         }
         setInput("")
     };
@@ -199,19 +197,21 @@ const Chat = ({route, navigation}) => {
     const handleClose = () => {
         client.close();
         console.log("Connection ended!");
-        navigation.navigate("Channels", {token})
+        navigation.navigate("Spots", {token})
     };
 
     // Function closing connection when clicking "Add spot" link and navigation out //
     const handleAddSpot = () => {
-        handleClose();
-        navigation.navigate("Channels", {toSpot: false});
+        client.close();
+        console.log("Connection ended!");
+        navigation.navigate("Spots", {toSpot: false});
     };
 
     // Function closing connection when clicking "Ask question" link and navigating out //
     const handleAskQuest = () => {
-        handleClose();
-        navigation.navigate("Channels", {toSpot: true});
+        client.close();
+        console.log("Connection ended!");
+        navigation.navigate("Spots", {toSpot: true});
     };
 
     // Function for for rounding members connections number and assigning relative string //
@@ -230,81 +230,180 @@ const Chat = ({route, navigation}) => {
             return null;
         }
     };
- 
+    // console.log(msgHistory)
+    // console.log(userId)
     // Function for rendering according to logged-in user and if message is a follow-up from same user //
     const renderItem = ({item}) => (
-        item.data.cont === true ?
-            username === item.data.user ?
-                <ClientMsg
-                    key={item.id}
-                    msg={item.data.message}/>
-                : 
-                <UserMsg
-                    key={item.id}
-                    msg={item.data.message}/>
+        userId === JSON.parse(item.clientId) ?
+            item.data.owner === true ?
+                item.data.cont !== true ?
+                    <OwnerClientMsg
+                        key={item.id}
+                        userName={item.data.user}
+                        msg={item.data.message}/>
+                    :
+                    <OwnerClientMsgNn
+                        key={item.id}
+                        msg={item.data.message}/>
             :
-            username !== item.data.user ?
-                <UserMsg
-                    key={item.id}
-                    userName={item.data.user} 
-                    msg={item.data.message}/>
-                    : 
-                <ClientMsg
-                    key={item.id}
-                    userName={item.data.user} 
-                    msg={item.data.message}/>
-    );
+                item.data.cont !== true ?
+                    <ClientMsg
+                        key={item.id}
+                        userName={item.data.user} 
+                        msg={item.data.message}/>
+                    :
+                    <ClientMsgNn
+                        key={item.id}
+                        msg={item.data.message}/>
+        :
+            item.data.owner === true ?
+                item.data.cont !== true ?
+                    <OwnerUserMsg
+                        key={item.id}
+                        userName={item.data.user}
+                        msg={item.data.message}/>
+                    :
+                    <OwnerUserMsgNn
+                        key={item.id}
+                        msg={item.data.message}/>
+            :
+                item.data.cont !== true ?
+                    <UserMsg
+                        key={item.id}
+                        userName={item.data.user} 
+                        msg={item.data.message}/>
+                    :
+                    <UserMsgNn
+                        key={item.id}
+                        msg={item.data.message}/>
+    )
+    
+    
+    // const renderItemm = ({item}) => (
+    //     item.data.cont === false ?
+    //         item.data.owner === true ?
+    //             userId === item.clientId ?
+    //                 <OwnerClientMsg
+    //                     key={item.id}
+    //                     userName={item.data.user}
+    //                     msg={item.data.message}/>
+    //                     : 
+    //                 <OwnerUserMsg
+    //                     key={item.id}
+    //                     userName={item.data.user}
+    //                     msg={item.data.message}/>
+    //             :
+    //             username !== item.data.user ?
+    //                 <UserMsg
+    //                     key={item.id}
+    //                     userName={item.data.user} 
+    //                     msg={item.data.message}/>
+    //                     : 
+    //                 <ClientMsg
+    //                     key={item.id}
+    //                     userName={item.data.user} 
+    //                     msg={item.data.message}/>
+    //     : 
+    //         item.data.owner === true ?
+    //             userId === item.clientId ?
+    //                 <OwnerClientMsg
+    //                     key={item.id}
+    //                     msg={item.data.message}/>
+    //                     : 
+    //                 <OwnerUserMsg
+    //                     key={item.id}
+    //                     msg={item.data.message}/>
+    //             :
+    //             username !== item.data.user ?
+    //                 <UserMsg
+    //                     key={item.id}
+    //                     msg={item.data.message}/>
+    //                     : 
+    //                 <ClientMsg
+    //                     key={item.id}
+    //                     msg={item.data.message}/>
+    // );
+    // const renderItem = ({item}) => (
+    //     item.data.cont === true ?
+    //         username === item.data.user ?
+    //             <ClientMsg
+    //                 key={item.id}
+    //                 msg={item.data.message}/>
+    //             : 
+    //             <UserMsg
+    //                 key={item.id}
+    //                 msg={item.data.message}/>
+    //         :
+    //         username !== item.data.user ?
+    //             <UserMsg
+    //                 key={item.id}
+    //                 userName={item.data.user} 
+    //                 msg={item.data.message}/>
+    //                 : 
+    //             <ClientMsg
+    //                 key={item.id}
+    //                 userName={item.data.user} 
+    //                 msg={item.data.message}/>
+    // );
 
 
     // Rendering Component //
     return (
     <View style={Style.main}>
-        <View style={Style.top}>
-            <View style={Style.header}>
-                <Text style={Style.title}>{spotTitle}</Text>
-                <Text style={Style.subtitle}>{spotDescription}</Text>
+        <View style={Style.content}>
+            <View style={Style.top}>
+                <View style={Style.header}>
+                    <Text style={Style.title}>{spotTitle}</Text>
+                </View>
+                <View style={Style.subOcupView}>
+                    <Text style={Style.subtitle}>by {spotOwner}</Text>
+                    <Text style={Style.usersNumber}>{members}</Text>
+                </View>
             </View>
-            <View style={Style.usersView}>
-                <Text style={Style.usersNumber}>{members}</Text>
+            <ScrollView
+                style={Style.chatContainer}
+                ref={scrollViewRef}
+                onContentSizeChange={() => scrollViewRef.current.scrollToEnd({animated: true})}>
+                {msgHistory.length !== 0?
+                    <FlatList 
+                        data={msgHistory}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id}/>
+                    : loading === true ? 
+                    <Loading /> 
+                    : <Welcome 
+                        title={spotTitle}
+                        owner={spotOwner}
+                        handlePressSpot={handleAddSpot}
+                        handlePressQuest={handleAskQuest}/>
+                }
+            </ScrollView>
+            <View style={Style.bottomContainer}>
+                <TouchableOpacity 
+                    style={Style.backButton}
+                    onPress={handleClose}>
+                        <Image 
+                            style={Style.backArrow}
+                            source={backArrow} />
+                        <Text style={Style.backButtonText}>Back</Text>
+                </TouchableOpacity>
+                <View style={Style.inputView}>
+                    <TextInput 
+                        style={Style.textInput}
+                        onChangeText={setInput}
+                        multiline={true}
+                        placeholder="Type your message..."
+                        value={input} />
+                    <TouchableOpacity style={Style.sendButton} 
+                        onPress={sendMessage}>
+                            <Image 
+                                style={Style.sendButtonIcon}
+                                source={sendArrow} />
+                            <Text style={Style.sendButtonText}>Send</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
-        <ScrollView
-            style={Style.chatContainer}
-            ref={scrollViewRef}
-            onContentSizeChange={() => scrollViewRef.current.scrollToEnd({animated: true})}>
-            {msgHistory.length !== 0?
-                <FlatList 
-                    data={msgHistory}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.id}/>
-                : loading === true ? 
-                <Loading /> 
-                : <Welcome 
-                    title={spotTitle}
-                    owner={spotOwner}
-                    handlePressSpot={handleAddSpot}
-                    handlePressQuest={handleAskQuest}/>
-            }
-        </ScrollView>
-        <View style={Style.bottomContainer}>
-            <TouchableOpacity 
-                style={Style.backButton}
-                onPress={handleClose}>
-                    <Text style={Style.backArrow}>⌌</Text>
-                    <Text style={Style.backButtonText}>Back</Text>
-            </TouchableOpacity>
-            <View style={Style.inputView}>
-                <TextInput 
-                    style={Style.textInput}
-                    onChangeText={setInput}
-                    placeholder="Type your message..."
-                    value={input} />
-                <TouchableOpacity style={Style.inputButton} 
-                    onPress={sendMessage}>
-                        <Text style={Style.inputButtonText}>Send</Text>
-                </TouchableOpacity>
-            </View>
-         </View>
     </View>
     );
 };
@@ -315,46 +414,53 @@ const Chat = ({route, navigation}) => {
 const Style = StyleSheet.create ({
     main: {
         flex: 1, 
-        backgroundColor: 'black', 
-        alignItems: 'stretch',
-        padding: 16
+        backgroundColor: colors.darkGrey, 
+        width: '100%', 
+        height: '100%', 
+        minHeight: 630,
+        justifyContent: 'center', 
+        alignItems: 'center'
     },
-        top: {
-            width: '100%', 
-            alignItems: 'flex-end',
-            flexDirection: 'row',
-            justifyContent: 'space-between'
+        content: {
+            flex: 1,
+            width: '100%',
+            maxWidth: 700,
+            padding: 35,
         },
-            header: {
-                flex: 1,
-                justifyContent: 'flex-start',
-                marginTop: 4
+            top: {
+                width: '100%', 
+                justifyContent: 'space-between',
             },
-                title: {
-                    fontSize: 34,
-                    lineHeight: 36,
-                    fontWeight: 100, 
-                    color: 'grey',
-                    marginBottom: 4
+                header: {
+                    flex: 1,
+                    justifyContent: 'flex-start',
                 },
-                subtitle: {
-                    color: 'grey'
-                },
-            usersView: {
-                width: 90, 
-                height: 50, 
-                justifyContent: "flex-end"
-            },
-                usersNumber: {
-                    color: 'grey', 
-                    fontSize: 11, 
-                    textAlign: "right", 
-                },
-                    usersLetter: {
-                        fontSize: 14, 
-                        fontWeight: 500
+                    title: {
+                        fontFamily: fonts.semibold,
+                        color: colors.metalBlue,
+                        fontSize: 26,
+                        lineHeight: 28,
+                        letterSpacing: 0.3,
+                        width: '80%',
+                        marginBottom: 8
                     },
-
+                    subOcupView: {
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                        alignItems: 'baseline'
+                    },
+                        subtitle: {
+                            fontFamily: fonts.medium,
+                            color: colors.decayingBlue,
+                            fontSize: 12,
+                            letterSpacing: 0.3
+                        },
+                        usersNumber: {
+                            fontFamily: fonts.medium,
+                            color: colors.decayingBlue, 
+                            fontSize: 10,
+                            letterSpacing: 0.2
+                        },
 
         chatContainer: {
             flex: 1, 
@@ -366,22 +472,24 @@ const Style = StyleSheet.create ({
             flexDirection: 'row'
         },
             backButton: {
-                width: 50, 
+                justifyContent: 'space-between',
+                backgroundColor: colors.bariumGrey, 
+                padding: 6, 
+                width: 50,
                 height: 50, 
-                backgroundColor: 'grey' 
             },
-            backArrow: {
-                fontSize: 30,
-                lineHeight: 20,
-                fontWeight: 800,
-            },
-            backButtonText: {
-                fontSize: 14, 
-                fontWeight: 600,
-                alignSelf: "center",
-                marginTop: 6
-            },
-            
+                backArrow: {
+                    width: 14, 
+                    height: 14,
+                    resizeMode: 'contain',
+                },
+                backButtonText: {
+                    fontFamily: fonts.medium,
+                    fontSize: 13,
+                    color: colors.blue,
+                    alignSelf: 'flex-end'
+                },
+
             inputView: {
                 flexDirection: 'row', 
                 flex: 1,
@@ -390,23 +498,35 @@ const Style = StyleSheet.create ({
                 textInput: {
                     width: '100%', 
                     height: '100%', 
-                    backgroundColor: 'grey', 
+                    fontFamily: fonts.regular,
+                    fontSize: 15,
+                    letterSpacing: 0.3,
+                    backgroundColor: colors.metalBlue, 
                     marginLeft: 4, 
-                    padding: 8
+                    paddingHorizontal: 8,
+                    paddingVertical: 16
                 },
-                inputButton: {
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    width: 100, 
+                sendButton: {
+                    justifyContent: 'space-between',
+                    width: 50, 
                     height: 50, 
-                    backgroundColor: 'lightblue', 
-                    alignSelf: 'right', 
+                    padding: 6, 
+                    alignItems: 'flex-end', 
+                    backgroundColor: colors.green
                 },
-                    inputButtonText: {
-                        fontSize: 16,
-                        color: 'black',
-                        fontWeight: 600
-                    }
+                    sendButtonIcon: { 
+                        width: 14,
+                        height: 14,
+                        resizeMode: 'contain',
+                    },
+                    sendButtonText: {
+                        fontFamily: fonts.medium,
+                        color: colors.blue,
+                        fontSize: 13, 
+                        alignSelf: 'flex-start',
+                        letterSpacing: 0.3
+                        }
+
 });
 
 export default Chat;
