@@ -1,22 +1,24 @@
 {
   "files": {
-    "app.js": "/spot/static/js/app.00bd0e7f.chunk.js",
-    "app.js.map": "/spot/static/js/app.00bd0e7f.chunk.js.map",
+    "app.js": "/spot/static/js/app.e61855ab.chunk.js",
+    "app.js.map": "/spot/static/js/app.e61855ab.chunk.js.map",
     "runtime~app.js": "/spot/static/js/runtime~app.7ff905d5.js",
     "runtime~app.js.map": "/spot/static/js/runtime~app.7ff905d5.js.map",
-    "static/js/2.6ec0d482.chunk.js": "/spot/static/js/2.6ec0d482.chunk.js",
-    "static/js/2.6ec0d482.chunk.js.map": "/spot/static/js/2.6ec0d482.chunk.js.map",
+    "static/js/2.80db4791.chunk.js": "/spot/static/js/2.80db4791.chunk.js",
+    "static/js/2.80db4791.chunk.js.map": "/spot/static/js/2.80db4791.chunk.js.map",
     "favicon-16.png": "/spot/favicon-16.png",
     "favicon-32.png": "/spot/favicon-32.png",
     "favicon.ico": "/spot/favicon.ico",
     "index.html": "/spot/index.html",
     "manifest.json": "/spot/manifest.json",
     "serve.json": "/spot/serve.json",
-    "static/js/2.6ec0d482.chunk.js.LICENSE.txt": "/spot/static/js/2.6ec0d482.chunk.js.LICENSE.txt"
+    "static/js/2.80db4791.chunk.js.LICENSE.txt": "/spot/static/js/2.80db4791.chunk.js.LICENSE.txt",
+    "static/media/spot-icon.png": "/spot/static/media/spot-icon.4e875f8a.png",
+    "static/media/spot-logo.png": "/spot/static/media/spot-logo.02e07d91.png"
   },
   "entrypoints": [
     "static/js/runtime~app.7ff905d5.js",
-    "static/js/2.6ec0d482.chunk.js",
-    "static/js/app.00bd0e7f.chunk.js"
+    "static/js/2.80db4791.chunk.js",
+    "static/js/app.e61855ab.chunk.js"
   ]
 }
