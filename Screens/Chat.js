@@ -145,6 +145,7 @@ const Chat = ({route, navigation}) => {
         getHistory(channel); 
         // Subscribing to Channel Messages //
         channel.subscribe(message => {
+            console.log(message);
             // Sorting Ocuppancy data from incoming messages, and push last incoming message to History array //
             if (message.data.metrics) {
                 setMembers(membersCount(message.data.metrics.connections));
@@ -164,6 +165,7 @@ const Chat = ({route, navigation}) => {
     const getHistory = (channel) => {
         channel.history((err, messagesPage) => {
             let messages = messagesPage.items;
+            console.log(messages);
             for (let i = 0; i < messages.length; i++) {
             // Identifying follow up messages to remove username //
                 let message = {...messages[i]};
