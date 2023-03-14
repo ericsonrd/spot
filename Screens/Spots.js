@@ -165,7 +165,7 @@ const Spots = ({route, navigation}) => {
         <Spot
             title={item.title}
             subtitle={item.description}
-            topic={item.topic}
+            topic={`${item.topic[0]}, ${item.topic[1]}, ${item.topic[2]}`}
             destination={() => navigation.navigate("Chat", {id: item.id})}
         />
     )

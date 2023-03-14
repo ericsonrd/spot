@@ -97,9 +97,9 @@ const Chat = ({route, navigation}) => {
 
     // Function to set Spot data //
     const renderSpotData = (response) => {
-        setSpotTitle(response.title);
-        setSpotOwner(response.owner.name);
-        setSpotOwnerId(response.owner.id);
+        setSpotTitle(response.spot.title);
+        setSpotOwner(response.spot.owner.name);
+        setSpotOwnerId(response.spot.owner.id);
     }
 
     // Calling function for Connection, Retrieving Channel, Previous History & Messages Subscription //
