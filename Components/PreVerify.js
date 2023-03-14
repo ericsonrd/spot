@@ -35,7 +35,7 @@ const Style = StyleSheet.create ({
 
     main: {
         flex: 1, 
-        backgroundColor: colors.darkGrey, 
+        backgroundColor: colors.plomo, 
         width: '100%', 
         height: '100%', 
         minHeight: 630,
@@ -54,22 +54,23 @@ const Style = StyleSheet.create ({
                 alignItems: 'flex-start',
                 width: '100%',
                 maxWidth: 700,
-                marginBottom: 48,
+                marginBottom: 70,
             },
                 logo: {
-                    width: '70%',
+                    width: '60%',
                     height: '48%',
                     minWidth: 250,
-                    maxWidth: 350,
-                    minHeight: 100,
+                    maxWidth: 280,
+                    minHeight: 90,
                     resizeMode: 'contain',
+                    marginBottom: 4
                 },
         successMsgView: {
             flex: 0.2,
             width: '80%',
             flexDirection: 'row',
             alignItems: 'center',
-            marginBottom: 48
+            marginBottom: 70
         },
             successIcon: {
                 width: 20,
@@ -85,15 +86,15 @@ const Style = StyleSheet.create ({
             },
         successTextView: {
             flex: 3,
-            width: '80%',
+            width: '76%',
             alignItems: 'flex-start',
         },
             successTitle: {
-                color: colors.peptoPink,
+                color: colors.purple,
                 fontFamily: fonts.semibold,
-                fontSize: 28, 
+                fontSize: 26, 
                 letterSpacing: 0.4,
-                lineHeight: 32, 
+                lineHeight: 34, 
                 marginBottom: 16,
             },
             successText: {
@@ -101,7 +102,7 @@ const Style = StyleSheet.create ({
                 fontFamily: fonts.medium,
                 fontSize: 17,
                 letterSpacing: 0.3,
-                lineHeight: 22, 
+                lineHeight: 26 , 
                 fontWeight: 300,
                 marginBottom: 16
             }

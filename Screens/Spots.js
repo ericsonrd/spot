@@ -1,15 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, Image, StyleSheet, FlatList, ScrollView, TouchableOpacity, Animated} from 'react-native';
-import Spot from '../Components/Spot.js';
+import Swiper from 'react-native-web-swiper';
+import Menu from '../Components/Menu.js';
+import HomeTabs from '../Components/HomeTabs.js';
 import {AddButton, SpotTitle, SpotDescription, SpotTopic} from '../Components/AddSpot.js';
-import {fonts, colors, gradients} from '../assets/theme/Theme.js';
-
-const logoutIcon = require("../assets/images/spot-main-arrow-top-left.png");
-const spotIcon = require("../assets/images/spot-icon.png");
+import {fonts, colors} from '../assets/theme/Theme.js';
+import Mosaic from '../Components/Mosaic.js';
 
 // Backend Spots query endpoint //
 const url = "https://x8ki-letl-twmt.n7.xano.io/api:i1afkiPC";
-const chatrooms = "/chatrooms";
+const spot = "/spot";
 
 // Channel list on Channel screen //
 const Spots = ({route, navigation}) => {
@@ -22,22 +22,21 @@ const Spots = ({route, navigation}) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [topic, setTopic] = useState("");
-    const {toSpot} = route.params;
-
+    // const {toSpot} = route.params;
 
     // Logic to navigate directly to Spot's spot when called from chat //
-    if (toSpot === true) {
-        navigation.navigate("Chat", {id: 1})
-    };
+    // if (toSpot === true) {
+    //     navigation.navigate("Chat", {id: 1})
+    // };
 
     // Fetching Spot List once on first render //
-    useEffect(() => {
-        fetchSpots();
-    }, []);
+    // useEffect(() => {
+    //     fetchSpots();
+    // }, []);
 
     // Backend call to fetch Spots' list //
     const fetchSpots = async () => {
-        const endpoint = `${url}${chatrooms}`;
+        const endpoint = `${url}${spot}`;
         try {
             const response = await fetch(endpoint, {
                 method : "GET",
@@ -62,7 +61,7 @@ const Spots = ({route, navigation}) => {
     // Backend call to send input data and create new Spot//
     const addSpot = async () => {
         if (title && description && topic !== "") {
-            const endpoint = `${url}${chatrooms}`;
+            const endpoint = `${url}${spot}`;
             const data = JSON.stringify({"title": title, "description": description, "topic": topic});
             try {
                 const response = await fetch(endpoint, {
@@ -85,7 +84,6 @@ const Spots = ({route, navigation}) => {
             } 
         }
     };
-
 
     // Handling Backend responses //
     const renderResponseSpotList = (response) => {
@@ -160,42 +158,36 @@ const Spots = ({route, navigation}) => {
         navigation.navigate("Login");
     };
 
-    // Flatlist RenderItem element //
-    const renderItem = ({item}) => (
-        <Spot
-            title={item.title}
-            subtitle={item.description}
-            topic={item.topic}
-            destination={() => navigation.navigate("Chat", {id: item.id})}
-        />
-    )
-
     // Rendering Spot List Screen //
     return (
         <View style={Style.main}>
             <View style={Style.content}>
-                <View style={Style.topView}>
-                    <TouchableOpacity 
-                        style={Style.logoutButton}
-                        onPress={handleLogout}>
-                            <Image 
-                                style={Style.logoutIcon}
-                                source={logoutIcon} />
-                            <Text style={Style.logoutText}>Logout</Text>
-                    </TouchableOpacity>                    
-                    <Image 
-                        style={Style.spotIcon}
-                        source={spotIcon} />
+                <View style={Style.topView}>  
+                    <HomeTabs />                 
                 </View>
-                <View style={Style.spotsView}>
-                    {spotList !== null? 
-                        <FlatList
-                            style={Style.flatList}
-                            data={spotList}
-                            renderItem={renderItem}
-                            keyExtractor={item => item.id}/> : null}
-                </View>
-                <View style={Style.addMain}>
+                <Swiper 
+                    controlsEnabled={false}>
+                    <View style={Style.swiperTab}>
+                        <View style={Style.discoverDotContainer}>
+                            <View style={Style.dot} />
+                        </View>
+                        <Mosaic /> 
+                    </View>
+                    <View style={Style.swiperTab}>
+                        <View style={Style.joinedDotContainer}>
+                            <View style={Style.dot} />
+                        </View>
+                        <Mosaic /> 
+                    </View>
+                    <View style={Style.swiperTab}>
+                        <View style={Style.chatsDotContainer}>
+                            <View style={Style.dot} />
+                        </View>
+                        <Mosaic />  
+                    </View>
+                </Swiper>
+                <Menu />
+                {/* <View style={Style.addMain}>
                     <Text style={Style.errorMessage}>{inputErrorMsg}</Text>
                     <View style={Style.addSpotMain}>
                         <AddButton 
@@ -219,7 +211,7 @@ const Spots = ({route, navigation}) => {
                                 changeText={setTopic}
                                 value={topic} /> : null}
                     </View>
-                </View>
+                </View> */}
             </View>
         </View>
     )
@@ -229,7 +221,7 @@ const Spots = ({route, navigation}) => {
 const Style = StyleSheet.create ({
     main: {
         flex: 1, 
-        backgroundColor: colors.darkGrey, 
+        backgroundColor: colors.plomo, 
         width: '100%', 
         height: '100%', 
         minHeight: 630,
@@ -242,69 +234,63 @@ const Style = StyleSheet.create ({
             width: '100%',
             maxWidth: 700,
             padding: 35,
+            paddingHorizontal: 15
         },
             topView: {
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'flex-end',
                 width: '100%',
-                maxWidth: 700,
-                minHeight: 50,
-                marginBottom: 12,
+                maxWidth: 700
             },
-                logoutButton: {
-                    justifyContent: 'space-between',
-                    backgroundColor: colors.zapote, 
-                    padding: 6, 
-                    width: 50,
-                    height: 50, 
+            swiperTab: {
+                flex: 1, 
+                borderRadius: 8
+            },
+                discoverDotContainer: {
+                    width: '54%', 
+                    maxWidth: 357, 
+                    alignItems: 'flex-start', 
+                    alignSelf: 'center', 
+                    marginBottom: 14
                 },
-                    logoutIcon: {
-                        width: 14, 
-                        height: 14,
-                        resizeMode: 'contain',
+                joinedDotContainer: {
+                    width: '5%', 
+                    maxWidth: 15, 
+                    alignItems: 'center', 
+                    alignSelf: 'center', 
+                    marginBottom: 14
+                },
+                chatsDotContainer: {
+                    width: '54%', 
+                    maxWidth: 357, 
+                    alignItems: 'flex-end', 
+                    alignSelf: 'center', 
+                    marginBottom: 14
+                },
+                    dot: {
+                        width: 6, 
+                        height: 6, 
+                        backgroundColor: colors.green, 
+                        borderRadius: 2
                     },
-                    logoutText: {
-                        fontFamily: fonts.medium,
-                        fontSize: 12,
-                        color: colors.blue
-                    },
-                spotIcon: {
-                    width: 48,
-                    height: 48
-                },
 
-            spotsView: {
-                flex: 10,
-                marginBottom: 12
-            },
-                flatList: {
-                },
-                spotItem: {
-                    marginBottom: 4
-                },
-
-            addMain: {
-                flex: 1,
-                width: '100%', 
-                height: 65, 
-                minHeight: 70,
-                alignItems: 'center',
-                justifyContent: 'flex-end'
-            },
-                errorMessage: {
-                    fontFamily: fonts.medium,
-                    color: colors.zapote,
-                    fontSize: 11, 
-                    letterSpacing: 0.3,
-                    marginBottom: 4
-                },
-                addSpotMain: {
-                    flexDirection: 'row', 
-                    width: '100%', 
-                    height: 55,
-                },
+            // addMain: {
+            //     width: '100%', 
+            //     height: 65, 
+            //     minHeight: 70,
+            //     alignItems: 'center',
+            //     justifyContent: 'flex-end'
+            // },
+            //     errorMessage: {
+            //         fontFamily: fonts.medium,
+            //         color: colors.zapote,
+            //         fontSize: 11, 
+            //         letterSpacing: 0.3,
+            //         marginBottom: 4
+            //     },
+            //     addSpotMain: {
+            //         flexDirection: 'row', 
+            //         width: '100%', 
+            //         height: 55,
+            //     },
 
 })
 

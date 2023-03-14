@@ -25,11 +25,11 @@ const Style = StyleSheet.create ({
             alignSelf: 'flex-start',
             flexWrap: 'wrap', 
             marginRight: 72, 
-            marginBottom: 4
+            marginBottom: 2
         },
             message: {
                 fontFamily: fonts.regular,
-                color: colors.blue,
+                color: colors.darkGrey,
                 fontSize: 15,
                 letterSpacing: 0.3,
                 padding: 12, 

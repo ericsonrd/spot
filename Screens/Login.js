@@ -85,16 +85,14 @@ const Login = ({navigation}) => {
                             style={Style.formView}
                             accessibilityRole="form">
                                 <View>
-                                    <Text style={Style.fieldTitle}>Email</Text>
                                     <TextInput 
                                         style={Style.input}
-                                        placeholder="your@email.com"
+                                        placeholder="Email"
                                         onChangeText={setEmail}
                                         value={email} />
-                                    <Text style={Style.fieldTitle}>Password</Text>
                                     <TextInput 
                                         style={Style.input}
-                                        placeholder="••••••••"
+                                        placeholder="Password"
                                         secureTextEntry={true}
                                         onChangeText={setPassword}
                                         value={password} />
@@ -131,7 +129,7 @@ const Login = ({navigation}) => {
 const Style = StyleSheet.create ({
     main: {
         flex: 1, 
-        backgroundColor: colors.darkGrey, 
+        backgroundColor: colors.plomo, 
         width: '100%', 
         height: '100%', 
         minHeight: 630,
@@ -153,10 +151,10 @@ const Style = StyleSheet.create ({
                 marginBottom: 48,
             },
                 logo: {
-                    width: '70%',
+                    width: '60%',
                     height: '48%',
                     minWidth: 250,
-                    maxWidth: 350,
+                    maxWidth: 280,
                     minHeight: 90,
                     resizeMode: 'contain',
                     marginBottom: 4
@@ -176,47 +174,40 @@ const Style = StyleSheet.create ({
                 marginBottom: 16,
                 maxWidth: 700,
             },
-                    fieldTitle: {
-                        color: colors.metalBlue,
-                        fontFamily: fonts.medium,
-                        fontSize: 14, 
-                        fontWeight: 300, 
-                        letterSpacing: 0.3,
-                        marginBottom: 8,
-                        marginLeft: 14
-                    },
-                    input: {
-                        width: 190, 
-                        height: 45, 
-                        backgroundColor: colors.metalBlue,
-                        placeholderTextColor: colors.decayingBlue,
-                        padding: 14,
-                        fontFamily: fonts.regular,
-                        fontSize: 15,
-                        textAlign: 'left',
-                        letterSpacing: 0.3,
-                        marginBottom: 16
-                    },
-                    forgotPassword: {
-                        width: '70%',
-                        color: colors.green,
-                        fontFamily: fonts.medium,
-                        fontSize: 14,
-                        letterSpacing: 0.4,
-                        marginLeft: 14
-                    },
-
-                errorView: {
-                    flex: 0.2,
-                    justifyContent: 'flex-end'
+                input: {
+                    width: 190, 
+                    height: 45, 
+                    color: colors.lightGrey,
+                    placeholderTextColor: colors.metalBlue,
+                    borderBottomColor: colors.metalBlue,
+                    borderBottomWidth: 1,
+                    padding: 14,
+                    paddingLeft: 0,
+                    fontFamily: fonts.regular,
+                    fontSize: 15,
+                    textAlign: 'left',
+                    letterSpacing: 0.3,
+                    marginBottom: 40
                 },
-                    errorMsg: {
-                        color: colors.zapote,
-                        fontSize: 12,
-                        letterSpacing: 0.3,
-                        fontFamily: fonts.medium,
-                        marginLeft: 14
-                    },
+                forgotPassword: {
+                    width: '70%',
+                    color: colors.green,
+                    fontFamily: fonts.medium,
+                    fontSize: 14,
+                    letterSpacing: 0.4,
+                    marginLeft: 14
+                },
+
+            errorView: {
+                flex: 0.2,
+                justifyContent: 'flex-end'
+            },
+                errorMsg: {
+                    color: colors.zapote,
+                    fontSize: 12,
+                    letterSpacing: 0.3,
+                    fontFamily: fonts.medium
+                },
 
             buttonSection: {
                 flex: 1, 
@@ -227,17 +218,16 @@ const Style = StyleSheet.create ({
                     flexDirection: 'row',
                     justifyContent: 'space-between', 
                     alignItems: 'flex-start', 
-                    width: 230, 
+                    width: 180, 
                     height: 60, 
                     paddingVertical: 8,
-                    paddingHorizontal: 14,
-                    backgroundColor: colors.green,
-                    marginBottom: 16 
+                    paddingRight: 14,
+                    marginBottom: 24 
                 },
                     buttonText: {
-                        color: colors.blue, 
+                        color: colors.green, 
                         fontFamily: fonts.semibold,
-                        fontSize: 25,
+                        fontSize: 40,
                         lineHeight: 25,
                         alignSelf: 'flex-end'
                     },
@@ -249,18 +239,18 @@ const Style = StyleSheet.create ({
                     },
 
             signupNav: {
-                marginLeft: 14, 
                 justifyContent: "center", 
                 alignItems: "center"
             },
                 signupText: {
-                    color: colors.green, 
+                    color: colors.purple, 
                     fontFamily: fonts.medium,
-                    fontSize: 16
+                    fontSize: 16,
+                    letterSpacing: 0.3
                 }
 
 });
 
 export default Login;
 
-// ercsn
+// ercsn //

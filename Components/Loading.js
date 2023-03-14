@@ -19,7 +19,7 @@ const Style = StyleSheet.create({
         flex: 1, 
         justifyContent: 'center', 
         alignItems: 'center', 
-        paddingTop: 160
+        paddingTop: '45%'
     },
         loadingText: {
             fontFamily: fonts.medium,

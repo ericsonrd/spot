@@ -6,13 +6,14 @@ export const fonts = {
 
 export const colors = {
     darkGrey: '#2a323b',
-    blue: '#2a3c66',
+    plomo: '#3b4b56',
     decayingBlue: '#4b6073',
     metalBlue: '#879dad',
     bariumGrey: '#d1dcd5',
+    lightGrey: '#ebebeb',
     green: '#b4e694',
     yellow: '#fae0a8',
-    peptoPink: '#e2c5d7',
+    purple: '#c0c8fa',
     zapote: '#e69d90'
 };
 

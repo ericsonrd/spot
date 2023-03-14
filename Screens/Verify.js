@@ -61,7 +61,7 @@ const Verify = ({navigation}) => {
 
     return (
         <View style={{flex: 1}}>
-            {magicToken === false ? 
+            {magicToken !== false ? 
                 <PreVerify /> : <PostVerify /> 
             }
         </View>

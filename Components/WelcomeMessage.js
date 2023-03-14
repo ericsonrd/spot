@@ -2,7 +2,8 @@ import React from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {fonts, colors} from '../assets/theme/Theme.js'
 
-const spotArrowGreen = require("../assets/images/spot-green-arrow-top-right.png");
+const spotArrowGreen = require("../assets/images/spot-main-arrow-top-right.png");
+
 // Welcome Component for Spot when no messages present //
 const Welcome = (props) => {
     return (
@@ -13,7 +14,10 @@ const Welcome = (props) => {
                     <Text style={Style.title}>{props.title}</Text>
                     <Text style={Style.titleOwner}>by {props.owner}</Text>
                 </View>
-                <Text style={Style.centerMessage}>Start writing on the field at the bottom. Messages will dissappear after 24 hours, make sure to come back often.</Text>
+                <View style={Style.centerMessages}>
+                    <Text style={Style.centerText}>Start typing at the bottom.</Text>
+                    <Text style={Style.centerText}>Messages dissappear after 48 hours so come back often.</Text>
+                </View>
                 <TouchableOpacity 
                     style={Style.buttonCreateSpot}
                     onPress={props.handlePressSpot}>
@@ -39,33 +43,31 @@ const Welcome = (props) => {
 const Style = StyleSheet.create ({
 
     main: {
-        flex: 1, 
-        backgroundColor: colors.darkGrey, 
-        position: 'absolute',
         width: '100%', 
+        height: '100%',
         minHeight: 450,
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
     },
         content: {
             flex: 1,
             alignItems: 'flex-start',
-            width: '78%',
+            width: '75%',
             maxWidth: 700,
-            paddingTop: 62
+            marginTop: '25%'
         },
             topView: {
                 marginBottom: 40
             },
                 titleWelcome: {
                     fontFamily: fonts.medium,
-                    color: colors.metalBlue, 
+                    color: colors.bariumGrey, 
                     fontSize: 16,
                     letterSpacing: 0.3,
                     marginBottom: 14
                 },
                 title: {
                     fontFamily: fonts.semibold,
-                    color: colors.peptoPink, 
+                    color: colors.lightGrey, 
                     fontSize: 38,
                     lineHeight: 40,
                     letterSpacing: 0.3,
@@ -78,38 +80,43 @@ const Style = StyleSheet.create ({
                     fontSize: 16,
                     letterSpacing: 0.4
                 },
-
-        centerMessage: {
-            fontFamily: fonts.medium,
-            color: colors.metalBlue,
-            fontSize: 16, 
-            lineHeight: 24, 
-            letterSpacing: 0.3,
-            marginBottom: 80
+        centerMessages: {
+            marginBottom: 80,
+            width: 280
         },
+            centerText: {
+                fontFamily: fonts.medium,
+                color: colors.lightGrey,
+                fontSize: 16, 
+                lineHeight: 24, 
+                letterSpacing: 0.3,
+            },
 
         buttonCreateSpot: {
             height: 35, 
             marginBottom: 2,
-            flexDirection: 'row'
+            flexDirection: 'row',
+            alignItems: 'top'
+
         },
         buttonQuestionFeedback: {
             height: 35, 
             flexDirection: 'row',
-            alignItems: 'baseline'
+            alignItems: 'top'
         },
             bottomText: {
                 fontFamily: fonts.medium,
                 color: colors.green, 
                 fontSize: 12,
+                lineHeight: 10,
                 letterSpacing: 0.3,
                 fontWeight: 500,
             },
             arrowGreen: {
-                width: 10,
-                height: 10,
+                width: 7,
+                height: 7,
                 resizeMode: 'contain',
-                marginLeft: 10
+                marginLeft: 8
             },
 
 });
